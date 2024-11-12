@@ -1,6 +1,10 @@
 {
-  "name": "se-2",
-  "version": "0.0.1",
+  "name": "yousplit-contract",
+  "version": "0.1.0",
+  "description": "An ethereum smart contract to split YouTube royalties between a bunch of beneficiaries.",
+  "repository": "https://github.com/partagexyz/YouSplit",
+  "author": "jcarbonnell",
+  "license": "MIT",
   "private": true,
   "workspaces": {
     "packages": [

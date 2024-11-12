@@ -3,12 +3,12 @@ import { DeployFunction } from "hardhat-deploy/types";
 import { Contract } from "ethers";
 
 /**
- * Deploys a contract named "YourContract" using the deployer account and
+ * Deploys a contract named "YouSplit" using the deployer account and
  * constructor arguments set to the deployer address
  *
  * @param hre HardhatRuntimeEnvironment object.
  */
-const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+const deployYouSplit: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   /*
     On localhost, the deployer account is the one that comes with Hardhat, which is already funded.
 
@@ -22,10 +22,20 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   const { deployer } = await hre.getNamedAccounts();
   const { deploy } = hre.deployments;
 
-  await deploy("YourContract", {
+  // Example of beneficiaries and their share percentages
+  // Note: The shares should add up to 9500 (95%) when considering all beneficiaries combined. 
+  const signers = await hre.ethers.getSigners();
+  const beneficiary1 = signers[1];
+  const beneficiary2 = signers[2];
+
+  const beneficiaries = [beneficiary1.address, beneficiary2.address];
+  // we assume each beneficiary gets an equal share of the remaining 95% after the owner's 5%
+  const shares =[475, 475];
+
+  await deploy("YouSplit", {
     from: deployer,
     // Contract constructor arguments
-    args: [deployer],
+    args: [beneficiaries, shares],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.
@@ -33,12 +43,12 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   });
 
   // Get the deployed contract to interact with it after deploying.
-  const yourContract = await hre.ethers.getContract<Contract>("YourContract", deployer);
-  console.log("👋 Initial greeting:", await yourContract.greeting());
+  const youSplit = await hre.ethers.getContract<Contract>("YouSplit", deployer);
+  console.log("YouSplit Contract deployed successfully");
 };
 
-export default deployYourContract;
+export default deployYouSplit;
 
 // Tags are useful if you have multiple deploy files and only want to run one of them.
-// e.g. yarn deploy --tags YourContract
-deployYourContract.tags = ["YourContract"];
+// e.g. yarn deploy --tags YouSplit
+deployYouSplit.tags = ["YouSplit"];
