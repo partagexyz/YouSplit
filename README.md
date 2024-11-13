@@ -1,80 +1,69 @@
-# 🏗 Scaffold-ETH 2
+# YouSplit - Ethereum Smart Contract for YouTube Royalties Distribution
 
-<h4 align="center">
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
-</h4>
+**YouSplit** is an Ethereum smart contract designed to manage and distribute YouTube royalties or similar revenue streams among beneficiaries. It's tailored for creators who wish to automate and track the distribution of their earnings based on predefined shares.
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+## Overview
 
-⚙️ Built using NextJS, RainbowKit, Hardhat, Wagmi, Viem, and Typescript.
+- **Project Status:** In Development
+- **License:** MIT
+- **Contract:**[YouSplit.sol](path/to/contract/YouSplit.sol)
+- **Frontend:** Next.js application located in the `nextjs` subdirectory
 
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
+## Features
 
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
+- **Automated Royalty Distribution**: Automatically calculates and allows for withdrawal of royalties based on predefined shares.
+- **Beneficiary Management**: Add, update, or remove beneficiaries with specific share allocations. 
+- **Owner Benefits**: The contract owner receives a default share of 5% from the total revenue.
+- **Transparency**: Beneficiaries can view their share, withdrawn amounts, and eligibility status via a user-friendly interface.
+- **Security**: Designed with security in mind, though currently lacks some advanced protections like reentrancy guards (can be added).
 
-## Requirements
+## Getting Started
 
-Before you begin, you need to install the following tools:
+### Prerequisites
 
-- [Node (>= v18.18)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
+- Node.js (14.x or later)
+- Yarn or npm
+- A modern web browser with MetaMask installed
+- Hardhat for smart contract development, testing, and deployment
 
-## Quickstart
+### Setup
 
-To get started with Scaffold-ETH 2, follow the steps below:
+1. **Clone the Repository:**
+   ```bash
+   git clone[your-repository-url] && cd YouSplit
+   ```
 
-1. Install dependencies if it was skipped in CLI:
+2. **Install Dependencies:**
+    ```
+    yarn install
+    ```
 
-```
-cd my-dapp-example
-yarn install
-```
+3. **Setup Environment Variables:**
+  - Create a .env file in the root of your project with:
+    ```
+    NEXT_PUBLIC_CONTRACT_ADDRESS=YOUR_DEPLOYED_CONTRACT_ADDRESS
+    ```
 
-2. Run a local network in the first terminal:
+4. **Compile and Deploy Smart Contracts:**
+- Ensure you have the appropriate network configuration in hardhat.config.js
+- Run:
+    ```bash
+    npx hardhat compile
+    yarn deploy
+    ```
 
-```
-yarn chain
-```
+5. **Start the frontend:**
+    ```
+    yarn start
+    ```
+  This will start the Next.js development server, and you can access the app at http://localhost:3000.
 
-This command starts a local Ethereum network using Hardhat. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `packages/hardhat/hardhat.config.ts`.
+6. **Using YouSplit:**
+- Connect Wallet: Use MetaMask to connect your Ethereum wallet.
+- View Contract Balance: See the total amount of ETH in the contract.
+- Withdraw Funds: If you're a beneficiary, you can withdraw your share of the royalties.
+- Manage Beneficiaries: Contract owner can add, update, or remove beneficiaries from the list.
 
-3. On a second terminal, deploy the test contract:
-
-```
-yarn deploy
-```
-
-This command deploys a test smart contract to the local network. The contract is located in `packages/hardhat/contracts` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/hardhat/deploy` to deploy the contract to the network. You can also customize the deploy script.
-
-4. On a third terminal, start your NextJS app:
-
-```
-yarn start
-```
-
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
-
-Run smart contract test with `yarn hardhat:test`
-
-- Edit your smart contracts in `packages/hardhat/contracts`
-- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-- Edit your deployment scripts in `packages/hardhat/deploy`
-
-
-## Documentation
-
-Visit our [docs](https://docs.scaffoldeth.io) to learn how to start building with Scaffold-ETH 2.
-
-To know more about its features, check out our [website](https://scaffoldeth.io).
-
-## Contributing to Scaffold-ETH 2
-
-We welcome contributions to Scaffold-ETH 2!
-
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
+**License**
+Distributed under the MIT License. See LICENSE for more information.
+   
