@@ -6,14 +6,14 @@
 
 - **Project Status:** In Development
 - **License:** MIT
-- **Contract:**[YouSplit.sol](path/to/contract/YouSplit.sol)
+- **Contract:**[YouSplit.sol](packages/hardhat/contracts/YouSplit.sol)
 - **Frontend:** Next.js application located in the `nextjs` subdirectory
 
 ## Features
 
 - **Automated Royalty Distribution**: Automatically calculates and allows for withdrawal of royalties based on predefined shares.
 - **Beneficiary Management**: Add, update, or remove beneficiaries with specific share allocations. 
-- **Owner Benefits**: The contract owner receives a default share of 5% from the total revenue.
+- **Owner Benefits**: The contract owner receives a default share of 5% from the total revenue. (business model)
 - **Transparency**: Beneficiaries can view their share, withdrawn amounts, and eligibility status via a user-friendly interface.
 - **Security**: Designed with security in mind, though currently lacks some advanced protections like reentrancy guards (can be added).
 
@@ -30,7 +30,7 @@
 
 1. **Clone the Repository:**
    ```bash
-   git clone[your-repository-url] && cd YouSplit
+   git clone https://github.com/partagexyz/YouSplit && cd YouSplit
    ```
 
 2. **Install Dependencies:**
@@ -48,7 +48,6 @@
 - Ensure you have the appropriate network configuration in hardhat.config.js
 - Run:
     ```bash
-    npx hardhat compile
     yarn deploy
     ```
 
@@ -59,11 +58,11 @@
   This will start the Next.js development server, and you can access the app at http://localhost:3000.
 
 6. **Using YouSplit:**
-- Connect Wallet: Use MetaMask to connect your Ethereum wallet.
-- View Contract Balance: See the total amount of ETH in the contract.
-- Withdraw Funds: If you're a beneficiary, you can withdraw your share of the royalties.
-- Manage Beneficiaries: Contract owner can add, update, or remove beneficiaries from the list.
+- **Connect Wallet:** Use MetaMask to connect your Ethereum wallet.
+- **View Contract Balance:** See the total amount of ETH in the contract.
+- **Withdraw Funds:** If you're a beneficiary, you can withdraw your share of the royalties.
+- **Manage Beneficiaries:** Contract owner can add, update, or remove beneficiaries from the list.
 
-**License**
+**License:**
 Distributed under the MIT License. See LICENSE for more information.
    
