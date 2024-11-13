@@ -150,6 +150,34 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [],
+          name: "getBeneficiaries",
+          outputs: [
+            {
+              internalType: "address[]",
+              name: "",
+              type: "address[]",
+            },
+            {
+              internalType: "uint256[]",
+              name: "shares",
+              type: "uint256[]",
+            },
+            {
+              internalType: "uint256[]",
+              name: "withdrawn",
+              type: "uint256[]",
+            },
+            {
+              internalType: "bool[]",
+              name: "isEligible",
+              type: "bool[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
           inputs: [
             {
               internalType: "address",

@@ -16,6 +16,7 @@ contract YouSplit {
 	address public immutable owner;
 	uint256 public totalShares;
 	uint256 public totalBalance;
+	address[] private beneficiaryList;
 
 	struct Beneficiary {
 		uint256 shares;
@@ -94,12 +95,16 @@ contract YouSplit {
 		if (_beneficiary != owner) {
 			if(beneficiaries[_beneficiary].shares > 0) {
 				totalShares -= beneficiaries[_beneficiary].shares;
+				removeFromBeneficiaryList(_beneficiary);
 			}
 			beneficiaries[_beneficiary] = Beneficiary({
 				shares: _shares, 
 				withdrawn: 0, 
 				isEligible: _isEligible
 			});
+			if (_shares > 0) {
+            	addToBeneficiaryList(_beneficiary);
+        	}
 			totalShares += _shares;
 			emit BeneficiaryAdded(_beneficiary, _shares);
 		}
@@ -110,6 +115,16 @@ contract YouSplit {
 		require(msg.sender == owner, "Only the owner can remove beneficiaries.");
 		require(_beneficiary != owner, "You cannot remove the owner.");
 		totalShares -= beneficiaries[_beneficiary].shares;
+		// check if the beneficiary is in the list
+		for (uint256 i = 0; i < beneficiaryList.length; i++) {
+			if (beneficiaryList[i] == _beneficiary) {
+				// overwrite the beneficiary with the last one in the list
+				beneficiaryList[i] = beneficiaryList[beneficiaryList.length - 1];
+				// remove the last element
+				beneficiaryList.pop();
+				break;
+			}
+		}
 		delete beneficiaries[_beneficiary];
 		emit BeneficiaryDeleted(_beneficiary);
 	}
@@ -118,4 +133,46 @@ contract YouSplit {
 	function getTotalFunds() public view returns (uint256) {
 		return address(this).balance;
 	}
+
+	// Function to get beneficiaries
+	function getBeneficiaries() external view returns (address[] memory, uint256[] memory shares, uint256[] memory withdrawn, bool[] memory isEligible) {
+		uint256 count = beneficiaryList.length;
+		address[] memory addrs = new address[](count);
+		uint256[] memory shareAmounts = new uint256[](count);
+		uint256[] memory withdrawnAmounts = new uint256[](count);
+		bool[] memory eligibility = new bool[](count);
+		for (uint256 i = 0; i < count; i++) {
+			addrs[i] = beneficiaryList[i];
+        	shareAmounts[i] = beneficiaries[beneficiaryList[i]].shares;
+    		withdrawnAmounts[i] = beneficiaries[beneficiaryList[i]].withdrawn;
+    		eligibility[i] = beneficiaries[beneficiaryList[i]].isEligible;
+    	}
+    	return (addrs, shareAmounts, withdrawnAmounts, eligibility);
+	}
+
+	// Helper functions for beneficiary list management
+	function addToBeneficiaryList(address _beneficiary) internal {
+    	if (beneficiaryExists(_beneficiary)) return;
+    	beneficiaryList.push(_beneficiary);
+	}
+
+	function removeFromBeneficiaryList(address _beneficiary) internal {
+    	for (uint256 i = 0; i < beneficiaryList.length; i++) {
+        	if (beneficiaryList[i] == _beneficiary) {
+            	beneficiaryList[i] = beneficiaryList[beneficiaryList.length - 1];
+            	beneficiaryList.pop();
+            	break;
+        	}
+    	}
+	}
+
+	function beneficiaryExists(address _beneficiary) internal view returns (bool) {
+    	for (uint256 i = 0; i < beneficiaryList.length; i++) {
+        	if (beneficiaryList[i] == _beneficiary) {
+            	return true;
+        	}
+    	}
+    	return false;
+	}
+
 }
