@@ -12,6 +12,11 @@ const deployedContracts = {
         {
           inputs: [
             {
+              internalType: "address",
+              name: "_usdcAddress",
+              type: "address",
+            },
+            {
               internalType: "address[]",
               name: "_beneficiaries",
               type: "address[]",
@@ -225,6 +230,19 @@ const deployedContracts = {
           type: "function",
         },
         {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_amount",
+              type: "uint256",
+            },
+          ],
+          name: "onrampRoyalties",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
           inputs: [],
           name: "owner",
           outputs: [
@@ -301,14 +319,23 @@ const deployedContracts = {
         },
         {
           inputs: [],
+          name: "usdcToken",
+          outputs: [
+            {
+              internalType: "contract IERC20",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
           name: "withdraw",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
-        },
-        {
-          stateMutability: "payable",
-          type: "receive",
         },
       ],
       inheritedFunctions: {},

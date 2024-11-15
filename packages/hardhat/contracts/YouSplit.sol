@@ -3,6 +3,7 @@ pragma solidity >=0.8.0 <0.9.0;
 
 // Useful for debugging. Remove when deploying to a live network.
 import "hardhat/console.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 // Use openzeppelin to inherit battle-tested implementations (ERC20, ERC721, etc)
 // import "@openzeppelin/contracts/access/Ownable.sol";
@@ -17,6 +18,7 @@ contract YouSplit {
 	uint256 public totalShares;
 	uint256 public totalBalance;
 	address[] private beneficiaryList;
+	IERC20 public usdcToken;
 
 	struct Beneficiary {
 		uint256 shares;
@@ -34,11 +36,11 @@ contract YouSplit {
 	event Withdrawal(address indexed beneficiary, uint256 amount);
 
 	// Constructor: Called once on contract deployment
-	// Check packages/hardhat/deploy/00_deploy_your_contract.ts
-	constructor(address[] memory _beneficiaries, uint256[] memory _shares) {
+	constructor(address _usdcAddress, address[] memory _beneficiaries, uint256[] memory _shares) {
 		require(_beneficiaries.length == _shares.length, "Must provide equal number of beneficiaries and shares.");
 		owner = msg.sender;
 		totalShares = 100;
+    	usdcToken = IERC20(_usdcAddress);
 
 		// Ensure the onwer gets 5% of the total shares
 		uint256 ownerShares = 5;
@@ -62,20 +64,16 @@ contract YouSplit {
 		}
 	}
 
-	// Function to receive ETH
-	receive() external payable {
-		totalBalance += msg.value;
-		emit ContractFunded(msg.sender, msg.value);
+	// Function to manually onramp YouTube royalties in USDC
+	function onrampRoyalties(uint256 _amount) public {
+		require(msg.sender == owner, "Only the owner can onramp royalties.");
+		// transfer USDC from the owner to the contract
+		require(usdcToken.transferFrom(msg.sender, address(this), _amount), "USDC transfer failed");
+		totalBalance += _amount;
+		emit ContractFunded(msg.sender, _amount);
 	}
 
-	// Function to check balance and eligibility
-	function getBeneficiaryInfo(address _beneficiary) public view returns (uint256 shares, uint256 withdrawn, uint256 eligibleAmount, bool isEligible) {
-		Beneficiary memory beneficiary = beneficiaries[_beneficiary];
-		uint256 sharePercentage = beneficiary.shares * 100 / totalShares;
-		return (beneficiary.shares, beneficiary.withdrawn, (totalBalance * sharePercentage) / 100, beneficiary.isEligible);
-	}
-
-	// Function to withdraw funds
+	// Function to withdraw USDC
 	function withdraw() public {
 		Beneficiary storage beneficiary = beneficiaries[msg.sender];
 		require(beneficiary.isEligible, "You are not eligible to withdraw.");
@@ -85,8 +83,21 @@ contract YouSplit {
 		require(amount > 0, "You have no funds to withdraw.");
 		beneficiary.withdrawn += amount;
 		totalBalance -= amount;
-		payable(msg.sender).transfer(amount);
+		// Transfer USDC to the beneficiary
+        require(usdcToken.transfer(msg.sender, amount), "USDC transfer failed");
 		emit Withdrawal(msg.sender, amount);
+	}
+
+	// Function to get total funds in the contract
+	function getTotalFunds() public view returns (uint256) {
+		return usdcToken.balanceOf(address(this));
+	}
+
+	// Function to check balance and eligibility
+	function getBeneficiaryInfo(address _beneficiary) public view returns (uint256 shares, uint256 withdrawn, uint256 eligibleAmount, bool isEligible) {
+		Beneficiary memory beneficiary = beneficiaries[_beneficiary];
+		uint256 sharePercentage = beneficiary.shares * 100 / totalShares;
+		return (beneficiary.shares, beneficiary.withdrawn, (totalBalance * sharePercentage) / 100, beneficiary.isEligible);
 	}
 
 	// Function to add or update beneficiary
@@ -127,11 +138,6 @@ contract YouSplit {
 		}
 		delete beneficiaries[_beneficiary];
 		emit BeneficiaryDeleted(_beneficiary);
-	}
-
-	// Function to get total funds in the contract
-	function getTotalFunds() public view returns (uint256) {
-		return address(this).balance;
 	}
 
 	// Function to get beneficiaries

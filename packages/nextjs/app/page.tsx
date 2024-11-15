@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useAccount } from "wagmi";
 import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { Address, Balance } from "~~/components/scaffold-eth";
+import { Address } from "~~/components/scaffold-eth";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
@@ -14,6 +14,8 @@ export default function Home() {
   const[contract, setContract] = useState<any>(null);
   const[withdrawableAmount, setwithdrawableAmount] = useState<bigint>(BigInt(0));
   const[beneficiaries, setBeneficiaries] = useState<[string, number, number, boolean][]>([]);
+  const[royaltyAmount, setRoyaltyAmount] = useState<string>('');
+  const[totalFunds, setTotalFunds] = useState<bigint | null>(null);
 
   useEffect(() => {
     const initContract = async () => {
@@ -31,8 +33,8 @@ export default function Home() {
 
       setContract(youSplit);
 
-      // fetch and set beneficiaries
       try {
+        // fetch and set beneficiaries
         const[addresses, shares, withdrawn, eligibility] = await youSplit.getBeneficiaries();
         const beneficiariesArray = addresses.map((addr: string, index: number) => [
           addr,
@@ -45,8 +47,13 @@ export default function Home() {
         // fetch withdrawable amount for the connected address
         const { eligibleAmount } = await youSplit.getBeneficiaryInfo(connectedAddress);
         setwithdrawableAmount(eligibleAmount);
+
+        // fetch total funds
+        const totalFunds = await youSplit.getTotalFunds();
+        setTotalFunds(totalFunds);
+
       } catch (error) {
-        console.error("Error fetching beneficiaries", error);
+        console.error("Error initializing contract:", error);
       }
     };
 
@@ -55,7 +62,6 @@ export default function Home() {
 
   const handleWithdraw = async () => {
     if (!contract) return;
-
     try {
       const tx = await contract.withdraw();
       await tx.wait();
@@ -66,6 +72,19 @@ export default function Home() {
     }
   };
 
+  const handleOnramp = async () => {
+    if (!contract) return;
+    try {
+      const amount = ethers.parseUnits(royaltyAmount, 6);
+      const tx = await contract.onrampRoyalties(amount);
+      await tx.wait();
+      alert("Royalties onramped successfully");
+      // Optionally, you could refresh the contract balance here or update the UI.
+    } catch (error) {
+      console.error("Onramping failed", error);
+      alert("Onramping failed. Please try again.");
+    }
+  };
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100">
@@ -86,8 +105,10 @@ export default function Home() {
         {isConnected && (
           <>
             <h2 className="text-2xl font-semibold mb-4">Contract Balance</h2>
-            <Balance address={connectedAddress} />
-            
+            <div className="bg-white shadow-md rounded-lg p-6">
+            <p>Total USDC: {totalFunds !== null ? ethers.formatUnits(totalFunds, 6) : "Loading..."} USDC</p>
+            </div>
+
             <h2 className="text-2xl font-semibold mt-8 mb-4">Your Share</h2>
             <div className="bg-white shadow-md rounded-lg p-6 mb-6">
               <p className="mb-2">Withdrawable Amount: {ethers.formatEther(withdrawableAmount)} ETH</p>
@@ -98,6 +119,26 @@ export default function Home() {
                 Withdraw
               </button>
             </div>
+
+            {connectedAddress === contract?.owner && (
+              <div className="bg-white shadow-md rounded-lg p-6 mb-6">
+                <h3 className="text-xl font-semibold mb-4">Onramp Royalties</h3>
+                <input 
+                  type="number" 
+                  value={royaltyAmount} 
+                  onChange={(e) => setRoyaltyAmount(e.target.value)} 
+                  placeholder="Enter amount in USDC" 
+                  step="0.000001"
+                  className="w-full mb-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <button
+                  onClick={handleOnramp}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-md"
+                >
+                  Onramp
+                </button>
+              </div>
+            )}
 
             <h2 className="text-2xl font-semibold mb-4">Beneficiaries</h2>
             <div className="bg-white shadow-md rounded-lg p-6">

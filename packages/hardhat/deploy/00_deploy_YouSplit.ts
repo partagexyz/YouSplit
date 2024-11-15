@@ -32,10 +32,13 @@ const deployYouSplit: DeployFunction = async function (hre: HardhatRuntimeEnviro
   // we assume each beneficiary gets an equal share of the remaining 95% after the owner's 5%
   const shares =[475, 475];
 
+  // USDC token address for the network you are deploying to
+  const usdcAddress = "0x9a1761ca62c0f3fe06D508Ba335aD0eBdA690b45";
+
   await deploy("YouSplit", {
     from: deployer,
     // Contract constructor arguments
-    args: [beneficiaries, shares],
+    args: [usdcAddress, beneficiaries, shares],
     log: true,
     // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
     // automatically mining the contract deployment transaction. There is no effect on live networks.
