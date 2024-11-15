@@ -87,9 +87,9 @@ export default function Home() {
   };
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100">
+    <main className="flex flex-col items-center justify-center min-h-screen p-4 bg-white text-black">
       <header className="w-full max-w-2xl mb-8">
-        <h1 className="text-4xl font-bold text-center text-blue-600 mb-4">YouSplit</h1>
+        <h1 className="text-4xl font-bold text-center text-black mb-4">YouSplit</h1>
         <div className="flex justify-center mb-4">
           <ConnectButton />
         </div>
@@ -114,7 +114,7 @@ export default function Home() {
               <p className="mb-2">Withdrawable Amount: {ethers.formatEther(withdrawableAmount)} ETH</p>
               <button
                 onClick={handleWithdraw}
-                className="bg-blue-600 text-white px-4 py-2 rounded-md"
+                className="bg-red-600 text-white px-4 py-2 rounded-md"
               >
                 Withdraw
               </button>
@@ -129,11 +129,11 @@ export default function Home() {
                   onChange={(e) => setRoyaltyAmount(e.target.value)} 
                   placeholder="Enter amount in USDC" 
                   step="0.000001"
-                  className="w-full mb-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full mb-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 />
                 <button
                   onClick={handleOnramp}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md"
+                  className="bg-red-600 text-white px-4 py-2 rounded-md"
                 >
                   Onramp
                 </button>
