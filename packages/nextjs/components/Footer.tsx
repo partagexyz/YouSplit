@@ -58,7 +58,7 @@ export const Footer = () => {
               >
                 <span className="link">partage.xyz</span>              
               </a>
-              <span>for</span>
+              <span>at</span>
               <a
                 className="flex justify-center items-center gap-1"
                 href="https://ethglobal.com/"
@@ -67,6 +67,7 @@ export const Footer = () => {
               >
                 <span className="link">ETHglobal</span>              
               </a>
+              <span>Bangkok, 2024</span>
             </div>
           </div>
         </ul>

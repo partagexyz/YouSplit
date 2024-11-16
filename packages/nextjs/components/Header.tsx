@@ -15,10 +15,10 @@ type HeaderMenuLink = {
 };
 
 export const menuLinks: HeaderMenuLink[] = [
-  {
+  /*{
     label: "Home",
     href: "/",
-  },
+  },*/
 
   {
     label: "Debug Contracts",

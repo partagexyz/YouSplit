@@ -36,8 +36,13 @@ const config: HardhatUserConfig = {
   defaultNetwork: "localhost",
   namedAccounts: {
     deployer: {
-      // By default, it will take the first Hardhat account as the deployer
-      default: 0,
+      default: 0, // first by default
+    },
+    beneficiary1: {
+      default: 1, // Second account in the accounts array
+    },
+    beneficiary2: {
+      default: 2, // Third account in the accounts array
     },
   },
   networks: {
